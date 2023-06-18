@@ -4,6 +4,7 @@ import typescript from "@rollup/plugin-typescript";
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import dts from "rollup-plugin-dts";
 import postcss from 'rollup-plugin-postcss'
+import tailwind from 'rollup-plugin-tailwindcss'
 
 import packageJson from "./package.json" assert { type: "json" };
 
@@ -31,6 +32,10 @@ export default [
       commonjs(),
       typescript({ tsconfig: "./tsconfig.json" }),
       postcss(),
+      tailwind({
+        input: './src/input.css',
+        purge: false,
+      }),
     ],
     external: ['react', 'react-dom'],
   },
