@@ -1,0 +1,34 @@
+{
+  "root": true,
+  "plugins": [
+    "import",
+    "react-hooks",
+    "react",
+    "prettier"
+  ],
+  "rules": {
+    "require-await": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "react/prefer-read-only-props": "error",
+    "react/jsx-fragments": "error",
+    "react/jsx-pascal-case": "error",
+    "semi": [2, "never"],
+    "object-curly-spacing": [2, "always"],
+    "prettier/prettier": "error",
+    "import/no-extraneous-dependencies": "error",
+    "sort-imports": ["error", { "ignoreDeclarationSort": true }]
+  },
+  "env": {
+    "browser": true,
+  },
+  "extends": [
+    "prettier",
+    "plugin:react/recommended"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
