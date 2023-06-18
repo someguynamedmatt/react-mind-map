@@ -1,16 +1,17 @@
 import React from 'react'
+import { Map } from '../../models'
+import { Node } from '../Node'
 
-const MindMap: React.FC = () => {
-  /* const ref = React.useRef(null) */
+export interface IMindMap {
+  data: Record<string, string>
+}
 
-  React.useEffect(() => {
-    /* const el = document?.createElement('node')
-     * ref?.current?.appendChild(el) */
-  }, [])
-
+const MindMap: React.FC<IMindMap> = ({ data }) => {
+  const map = new Map()
   return (
     <div>
       <div>MindMap: inner</div>
+      <Node />
     </div>
   )
 }
