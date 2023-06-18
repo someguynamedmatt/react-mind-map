@@ -1,17 +1,26 @@
 import React from 'react'
-import { Map } from '../../models'
+import { Map, Node as NodeModel } from '../../models'
 import { Node } from '../Node'
 
 export interface IMindMap {
   data: Record<string, string>
 }
 
+// TODO remove this hard-coded map/data
+const map = new Map()
+const n1 = new NodeModel({ topic: 'triangle' })
+const n2 = new NodeModel({ topic: 'kimura' })
+map.root?.setChildren([n1, n2])
+map.root?.topic = 'closed guard'
+
 const MindMap: React.FC<IMindMap> = ({ data }) => {
-  const map = new Map()
   return (
     <div>
       <div>MindMap: inner</div>
-      <Node />
+      <Node node={map.root} />
+      {map.root?.children.map((n, i) => (
+        <Node key={i} node={n} />
+      ))}
     </div>
   )
 }

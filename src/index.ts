@@ -1,4 +1,4 @@
 export * from './components'
-export { Map } from './models'
+export { Map, Node } from './models'
 export { useMindMap } from './hooks'
 import './input.css'
