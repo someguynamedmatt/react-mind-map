@@ -1,12 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
 import { Node } from './node'
 
-type MapNodes =
-  | {
-      root: Node
-      [id: string]: Node
-    }
-  | Record<string, Node | undefined>
+type MapNodes = {
+  [id: string]: Node
+}
 
 export class Map {
   private _nodes: MapNodes = {}
@@ -14,6 +11,7 @@ export class Map {
 
   constructor(root: Node = new Node({ id: uuidv4(), isRoot: true })) {
     this._nodes = { root }
+    this._root = root
   }
 
   public addNode(node: Node): void {

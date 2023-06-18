@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
 
-interface INode {
+type INode = {
   children?: Node[]
-  id: string
+  id?: string
   isRoot?: boolean
   parentId?: string | null
   topic?: string | null
@@ -15,19 +15,20 @@ export class Node {
   private _parentId: string | null = null
   private _topic: string | null
 
-  constructor({ children, id = uuidv4(), topic, isRoot, parentId }: INode) {
-    this.children = children ?? []
+  constructor({ children = [], id = uuidv4(), topic, isRoot, parentId }: INode = {}) {
     this._id = id
     this._topic = topic ?? null
     this._isRoot = Boolean(isRoot)
     this._parentId = parentId ?? null
+
+    this.setChildren(children)
   }
 
   public get children(): Node[] {
     return this._children
   }
 
-  public set children(nodes: Node[]) {
+  public setChildren(nodes: Node[]) {
     // Reset each node's parentId
     // to this node's id
     nodes.forEach((node: Node) => {
@@ -54,6 +55,11 @@ export class Node {
 
   public set isRoot(isRoot: boolean) {
     this._isRoot = isRoot
+    if (this._isRoot === false && this._parentId === null) {
+      console.warn(
+        '[react-mind-map]: an orphaned node has been created after setting `isRoot` to false'
+      )
+    }
   }
 
   public get parentId(): string | null {
