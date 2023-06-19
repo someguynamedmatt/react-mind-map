@@ -1,7 +1,8 @@
 import React from 'react'
-import { Map, Node as NodeModel } from '../../models'
-import { Node } from '../Node'
-import { useMindMap } from '../../hooks'
+import { Map, Node as NodeModel } from '../models'
+import { Node } from './Node'
+import { SvgPath } from './SvgPath'
+import { useMindMap } from '../hooks'
 
 export interface IMindMap {
   data: Record<string, string>
@@ -13,7 +14,7 @@ const n1 = new NodeModel({ topic: 'triangle' })
 map.root?.setChildren([n1])
 map.root?.topic = 'closed guard'
 
-const MindMap: React.FC<IMindMap> = ({ data }) => {
+export const MindMap: React.FC<IMindMap> = ({ data }) => {
   const { getPosition } = useMindMap()
   const [rootCoord, setRootCoord] = React.useState()
   const [nCoord, setNCoord] = React.useState()
@@ -30,20 +31,12 @@ const MindMap: React.FC<IMindMap> = ({ data }) => {
   return (
     <div>
       {rootCoord?.centerH && nCoord?.centerH ? (
-        <svg style={{ position: 'absolute' }} width='1039' height='500'>
-          <defs>
-            <marker id='head' orient='auto' markerWidth='2' markerHeight='4' refX='0.1' refY='2'>
-              <path d='M0,0 V4 L2,2 Z' fill='#555' />
-            </marker>
-          </defs>
-          <path
-            stroke='#555'
-            strokeWidth='2'
-            marker-end='url(#head)'
-            fill='blue'
-            d={`M ${rootCoord.centerH} ${rootCoord.centerV} C ${rootCoord.centerH} ${rootCoord.centerV}, ${nCoord.centerH} ${nCoord.centerV}, ${nCoord.centerH} ${nCoord.centerV}`}
-          ></path>
-        </svg>
+        <SvgPath
+          x1={rootCoord.centerH}
+          y1={rootCoord.centerV}
+          x2={nCoord.centerH}
+          y2={nCoord.centerV}
+        />
       ) : null}
       <div>MindMap: inner</div>
       {/* root */}
@@ -55,5 +48,3 @@ const MindMap: React.FC<IMindMap> = ({ data }) => {
     </div>
   )
 }
-
-export default MindMap

@@ -1,2 +1,2 @@
-export { default as MindMap } from './MindMap'
+export { MindMap } from './MindMap'
 export { Node } from './Node'
