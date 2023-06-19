@@ -19,7 +19,7 @@ export const SvgPath: React.FC<ISvgPath> = ({ x1, y1, x2, y2 }) => {
       <path
         stroke='#555'
         strokeWidth='2'
-        marker-end='url(#head)'
+        markerEnd='url(#head)'
         fill='#555'
         d={`M ${x1} ${y1} C ${x1} ${y1}, ${x2} ${y2}, ${x2} ${y2}`}
       ></path>
