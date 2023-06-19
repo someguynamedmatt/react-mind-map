@@ -24,6 +24,16 @@ export const Node: React.FC<{ node: INode }> = React.forwardRef(
       setPositions(node.children?.map((n, i) => getPosition(childRefs.current[i].current)))
     }, [])
 
+    React.useEffect(() => {
+      const resize = () => {
+        setThisPosition(getPosition(ref?.current))
+        setPositions(node.children?.map((n, i) => getPosition(childRefs.current[i].current)))
+      }
+      window.addEventListener('resize', resize)
+
+      return () => window.removeEventListener('resize', resize)
+    }, [])
+
     return (
       <>
         <div className={nodeStyle} ref={ref}>

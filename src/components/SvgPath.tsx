@@ -8,9 +8,9 @@ interface ISvgPath {
   y2: number
 }
 
-export const SvgPath: React.FC<ISvgPath> = ({ x1, y1, x2, y2 }) => {
+export const SvgPath: React.FC<ISvgPath> = ({ x1 = 0, y1 = 0, x2 = 0, y2 = 0 }) => {
   return (
-    <svg style={{ position: 'absolute' }} width='1039' height='500'>
+    <svg width='1039' height='500' className='absolute'>
       <defs>
         <marker id='head' orient='auto' markerWidth='2' markerHeight='4' refX='0.1' refY='2'>
           <path d='M0,0 V4 L2,2 Z' fill='#555' />
