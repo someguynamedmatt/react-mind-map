@@ -18,11 +18,11 @@ map.root?.topic = 'closed guard'
 export const MindMap: React.FC<IMindMap> = ({ data }) => {
   const rootRef = React.useRef()
   return (
-    <div>
+    <>
       <div>MindMap</div>
       <div>
         <Node ref={rootRef} node={map.root} />
       </div>
-    </div>
+    </>
   )
 }

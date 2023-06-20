@@ -36,8 +36,10 @@ export const Node: React.FC<{ node: INode }> = React.forwardRef(
 
     return (
       <>
-        <div className={nodeStyle} ref={ref}>
-          {node.topic}
+        <div>
+          <div className={nodeStyle} ref={ref}>
+            {node.topic}
+          </div>
         </div>
         {node.children?.map((n: Node, i: number) => (
           <>
