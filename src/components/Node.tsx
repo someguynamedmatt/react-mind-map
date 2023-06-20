@@ -35,8 +35,8 @@ export const Node: React.FC<{ node: INode }> = React.forwardRef(
     }, [])
 
     return (
-      <>
-        <div>
+      <div style={{ display: 'flex' }}>
+        <div style={{ zIndex: '20', width: '200px' }}>
           <div className={nodeStyle} ref={ref}>
             {node.topic}
           </div>
@@ -44,16 +44,17 @@ export const Node: React.FC<{ node: INode }> = React.forwardRef(
         {node.children?.map((n: Node, i: number) => (
           <>
             <SvgPath
+              id={n.topic}
               x1={thisPosition.centerH}
-              y1={thisPosition.centerV}
+              y1={thisPosition.centerV - 25}
               x2={positions[i]?.centerH}
-              y2={positions[i]?.centerV}
+              y2={positions[i]?.centerV - 25}
               key={i}
             />
             <Node ref={childRefs?.current[i]} key={`${i}-${node.topic}`} node={n} />
           </>
         ))}
-      </>
+      </div>
     )
   }
 )
