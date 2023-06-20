@@ -35,8 +35,8 @@ export const Node: React.FC<{ node: INode }> = React.forwardRef(
     }, [])
 
     return (
-      <div style={{ display: 'flex' }}>
-        <div style={{ zIndex: '20', width: '200px' }}>
+      <div className='flex'>
+        <div className='z-20 w-[200px]'>
           <div className={nodeStyle} ref={ref}>
             {node.topic}
           </div>
