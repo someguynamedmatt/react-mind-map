@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { RefObject } from 'react'
 
 export type NodePosition = {
   centerH: number
@@ -10,14 +10,20 @@ const undefinedPosition: NodePosition = {
   centerV: 0,
 }
 
-export function useMindMap() {
-  const getPosition = (ref: HTMLElement): NodePosition => {
+export function useMindMap(ref: React.RefObject<HTMLElement>) {
+  const getPosition = (ref?: HTMLElement): NodePosition => {
     if (!ref) return undefinedPosition
 
-    const { right, bottom, left, top } = ref.getBoundingClientRect()
-    const centerH = left + (right - left) / 2
-    const centerV = top + (bottom - top) / 2
+    const offsetTop = ref.offsetTop
+    const offsetLeft = ref.offsetLeft
+    const { width, height } = ref.getBoundingClientRect()
+    const midPointX = Math.floor(width / 2)
+    const midPointY = Math.floor(height / 2)
 
+    const centerH = offsetLeft + midPointX
+    const centerV = offsetTop + midPointY
+
+    debugger
     return { centerH, centerV }
   }
 

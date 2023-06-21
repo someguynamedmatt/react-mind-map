@@ -2,6 +2,8 @@ import React from 'react'
 
 // see: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#curve_commands
 interface ISvgPath {
+  m1: number
+  m2: number
   x1: number
   y1: number
   x2: number
@@ -25,7 +27,7 @@ export const SvgPath: React.FC<ISvgPath> = ({ x1 = 0, y1 = 0, x2 = 0, y2 = 0, id
         strokeWidth='2'
         markerEnd='url(#head)'
         fill='#555'
-        d={`M ${x1} ${y1} C ${x1} ${y1}, ${x2 - 50} ${y2}, ${x2 - 50} ${y2}`}
+        d={`M ${m1} ${m2} C ${x1} ${y1}, ${x2} ${y2}, ${x2} ${y2}`}
       ></path>
     </svg>
   )
