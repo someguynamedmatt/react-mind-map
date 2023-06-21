@@ -8,7 +8,7 @@ const nodeStyle =
 
 export const Node: React.FC<{ node: INode; xCoord: number; yCoord: number; hypotenuse: number }> =
   React.forwardRef(
-    ({ node, xCoord = 0, yCoord = 0, hypotenuse = 0 }, ref: React.RefObject<HTMLElement>) => {
+    ({ node, xCoord = 0, yCoord = 0, hypotenuse = 20 }, ref: React.RefObject<HTMLElement>) => {
       const { getPosition } = useMindMap()
       const childRefs = React.useRef([])
       const [thisPosition, setThisPosition] = React.useState(getPosition(ref?.current))
@@ -44,8 +44,16 @@ export const Node: React.FC<{ node: INode; xCoord: number; yCoord: number; hypot
         updatePositions()
       }
 
+      const xFromRoot = Math.floor(Math.sin(360 / node.children.length) * hypotenuse)
+      const yFromRoot = Math.floor(Math.cos(360 / node.children.length) * hypotenuse)
+      console.log(JSON.stringify({ yFromRoot, xFromRoot }))
       return (
-        <div className={`flex justify-center ${yCoord ? 'absolute bottom-[100px]' : ''}`}>
+        <div
+          className='flex justify-center'
+          style={...xCoord && yCoord && xFromRoot && yFromRoot
+            ? { bottom: `${yFromRoot}px`, right: `${xFromRoot}px`, position: 'absolute' }
+            : {}}
+        >
           <div className='z-20 w-[200px]'>
             <div onClick={onClick} className={nodeStyle} ref={ref}>
               {node.topic}
@@ -61,7 +69,13 @@ export const Node: React.FC<{ node: INode; xCoord: number; yCoord: number; hypot
                 y2={positions[i]?.centerV - 25}
                 key={i}
               />
-              <Node yCoord={1} ref={childRefs?.current[i]} key={`${i}-${node.topic}`} node={n} />
+              <Node
+                yCoord={yFromRoot}
+                xCoord={xFromRoot}
+                ref={childRefs?.current[i]}
+                key={`${i}-${node.topic}`}
+                node={n}
+              />
             </>
           ))}
         </div>
