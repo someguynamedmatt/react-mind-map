@@ -20,7 +20,7 @@ export const MindMap: React.FC<IMindMap> = ({ data }) => {
   return (
     <>
       <div>MindMap</div>
-      <div>
+      <div className='h-screen'>
         <Node ref={rootRef} node={map.root} />
       </div>
     </>
