@@ -21,21 +21,7 @@ export function useMindMap() {
     return { centerH, centerV }
   }
 
-  // const getDistanceBetweenNodes = (
-  //   node1: React.RefObject<HTMLElement>,
-  //   node2: React.RefObject<HTMLElement>
-  // ): { y: number; x: number } => {
-  //   const n1Pos = getPosition(node1)
-  //   const n2Pos = getPosition(node2)
-  //   const yDist = Math.abs(n1Pos.centerV - n2Pos.centerV)
-  //   const xDist = Math.abs(n1Pos.centerH - n2Pos.centerH)
-
-  //   // return Math.sqrt(Math.pow(yDist, 2) + Math.pow(xDist, 2))
-  //   return { y: yDist, x: xDist }
-  // }
-
   return {
     getPosition,
-    // getDistanceBetweenNodes,
   }
 }
