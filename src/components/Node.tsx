@@ -1,14 +1,14 @@
 import React from 'react'
 import { INode, Node as NodeModel } from '../models/node'
 import { useMindMap } from '../hooks'
-import { SvgPath } from './SvgPath'
+import { SvgLine } from './SvgLine'
 
 const nodeStyle =
-  'inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 relative'
+  'inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700'
 
 export const Node: React.FC<{ node: INode; xCoord: number; yCoord: number; hypotenuse: number }> =
   React.forwardRef(
-    ({ node, xCoord = 0, yCoord = 0, hypotenuse = 20 }, ref: React.RefObject<HTMLElement>) => {
+    ({ node, xCoord = 0, yCoord = 0, hypotenuse = 150 }, ref: React.RefObject<HTMLElement>) => {
       const { getPosition } = useMindMap(ref)
       const childRefs = React.useRef([])
       const [rootPosition, setRootPosition] = React.useState(getPosition(ref?.current))
@@ -48,7 +48,11 @@ export const Node: React.FC<{ node: INode; xCoord: number; yCoord: number; hypot
         <div
           className='flex justify-center'
           style={...xCoord && yCoord
-            ? { bottom: `${yCoord}px`, right: `${xCoord}px`, position: 'absolute' }
+            ? {
+                ...(yCoord > 0 ? { top: `${yCoord}px` } : { bottom: `${yCoord}px` }),
+                ...(xCoord > 0 ? { right: `${xCoord}px` } : { left: `${xCoord}px` }),
+                position: 'absolute',
+              }
             : {}}
         >
           <div className='z-20 w-[200px]' ref={ref}>
@@ -58,10 +62,10 @@ export const Node: React.FC<{ node: INode; xCoord: number; yCoord: number; hypot
           </div>
           {node.children?.map((n: Node, i: number) => {
             const xFromRoot = Math.floor(
-              Math.sin((360 / node.children.length) * (i + 1)) * hypotenuse
+              Math.sin(((2 * Math.PI) / node.children.length) * (i + 1)) * hypotenuse
             )
             const yFromRoot = Math.floor(
-              Math.cos((360 / node.children.length) * (i + 1)) * hypotenuse
+              Math.cos(((2 * Math.PI) / node.children.length) * (i + 1)) * hypotenuse
             )
             console.log(
               JSON.stringify({
@@ -72,18 +76,16 @@ export const Node: React.FC<{ node: INode; xCoord: number; yCoord: number; hypot
                 x2: positions[i]?.centerH,
                 y2: positions[i]?.centerV,
                 id: n.topic,
-                offsetTop: ref?.current?.offsetTop,
-                offsetLeft: ref?.current?.offsetLeft,
               })
             )
             return (
               <>
-                <SvgPath
+                <SvgLine
                   id={n.topic}
                   x1={rootPosition.centerH}
-                  y1={rootPosition.centerV - 25}
-                  x2={positions[i]?.centerH + xFromRoot}
-                  y2={positions[i]?.centerV + yFromRoot}
+                  y1={rootPosition.centerV}
+                  x2={rootPosition.centerH + xFromRoot}
+                  y2={rootPosition.centerV + yFromRoot}
                   key={i}
                 />
                 <Node
