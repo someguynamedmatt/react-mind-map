@@ -80,13 +80,14 @@ export const MindMapProvider: React.FC = ({ children }) => {
 
   const addNode = (node: NodeModel) => {
     const newNode = new NodeModel({ topic: 'new-move', parentId: node.id })
+    console.log('parentNode', node)
     console.log('newNode', newNode)
+    console.log('nodes', nodes)
     node.setChildren([newNode])
     setNodes([...nodes, newNode])
   }
 
   const setRoot = (rootNode: NodeModel) => {
-    console.log('SET ROOT', rootNode)
     root.current = rootNode
   }
 
@@ -96,7 +97,8 @@ export const MindMapProvider: React.FC = ({ children }) => {
 
   React.useEffect(() => {
     if (root?.current) {
-      setNodes([...nodes, ...root?.current?.children])
+      console.log('set nodes...')
+      setNodes([...root?.current?.children])
     }
   }, [root?.current])
 

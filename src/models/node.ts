@@ -6,10 +6,9 @@ export type INode = {
   isRoot?: boolean
   parentId?: string | null
   parentRef?: React.RefObject<HTMLElement> | null
-  topic?: string | null
-  position?: Record<string, string>
-  parentPosition?: Record<string, string>
+  ref?: React.RefObject<HTMLElement> | null
   siblings?: number
+  topic?: string | null
 }
 
 export class Node {
@@ -18,9 +17,8 @@ export class Node {
   private _isRoot: boolean
   private _parentId: string | null = null
   private _parentRef: React.RefObject<HTMLElement> | null = null
+  private _ref: React.RefObject<HTMLElement> | null = null
   private _topic: string | null
-  private _position: Record<string, string> = {} // TODO needs a better type def
-  private _parentPosition: Record<string, string> = {} // TODO needs a better type def
   private _siblings: number = 0
 
   constructor({
@@ -52,15 +50,16 @@ export class Node {
     // nodes.length _includes_ this node
     const siblings = [...this._children, ...nodes].length
 
-    console.log('setChildren nodes', nodes)
     // Reset each node's parentId
     // to this node's id
     nodes.forEach((node: Node) => {
       node.parentId = this._id
       node.siblings = siblings
+      node.parentRef = this._parentRef
     })
     this._children = [...this._children, ...nodes]
-    this._siblings = nodes.length - 1
+    this.updateChildren()
+    // this._siblings = nodes.length - 1
   }
 
   public get id(): string {
@@ -104,25 +103,16 @@ export class Node {
     this._parentRef = ref
   }
 
-  public get position(): Record<string, string> {
-    return this._position
+  public get ref(): React.RefObject<HTMLElement> | null {
+    return this._ref
+  }
+
+  public set ref(ref: React.RefObject<HTMLElement> | null) {
+    this._ref = ref
   }
 
   public get defaultPosition(): Record<string, string> {
     return { horizontalCenter: '500px', verticalCenter: '500px' }
-  }
-
-  public set position(position: Record<string, string>) {
-    this._position = position
-  }
-
-  public get parentPosition(): Record<string, number> {
-    // return this._parentPosition
-    return { horizontalCenter: 500, verticalCenter: 500 }
-  }
-
-  public set parentPosition(parentPosition: Record<string, string>) {
-    this._parentPosition = parentPosition
   }
 
   public get siblings(): number {
@@ -131,5 +121,12 @@ export class Node {
 
   private set siblings(siblings: number) {
     this._siblings = siblings
+  }
+
+  private updateChildren(): void {
+    const siblings = this._children.length - 1
+    this._children.forEach(child => {
+      child.siblings = siblings
+    })
   }
 }
