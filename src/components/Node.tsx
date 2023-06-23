@@ -1,104 +1,63 @@
-import React from 'react'
+import React, { createRef } from 'react'
 import { INode, Node as NodeModel } from '../models/node'
 import { useMindMap } from '../hooks'
 import { SvgLine } from './SvgLine'
+import { MindMapContext, MindMapProvider } from './MindMap'
 
 const nodeStyle =
-  'inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700'
+  'inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 relative'
 
-export const Node: React.FC<{ node: INode; xCoord: number; yCoord: number; hypotenuse: number }> =
-  React.forwardRef(
-    ({ node, xCoord = 0, yCoord = 0, hypotenuse = 150 }, ref: React.RefObject<HTMLElement>) => {
-      const { getPosition } = useMindMap(ref)
-      const childRefs = React.useRef([])
-      const [rootPosition, setRootPosition] = React.useState(getPosition(ref?.current))
-      const [positions, setPositions] = React.useState([])
+export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolean }> =
+  React.forwardRef(({ childNumber = 1, node, isRoot }, ref: React.RefObject<HTMLElement>) => {
+    const hypotenuse = 150
+    const { addNode, getPositionOf } = React.useContext(MindMapContext)
 
-      // TODO not sure if this is necessary
-      if (childRefs.current.length !== node.children?.length) {
-        childRefs.current = Array(node.children?.length)
-          .fill()
-          .map((_, i) => childRefs.current[i]?.current || React.createRef())
-      }
+    const xDistanceFromParent = node.siblings
+      ? Math.floor(Math.sin(((2 * Math.PI) / node.siblings + 1) * childNumber + 1) * hypotenuse)
+      : hypotenuse
 
-      const updatePositions = () => {
-        setRootPosition(getPosition(ref?.current))
-        setPositions(node.children?.map((_n, i) => getPosition(childRefs?.current[i]?.current)))
-      }
+    const yDistanceFromParent = node.siblings
+      ? Math.floor(Math.cos(((2 * Math.PI) / node.siblings + 1) * childNumber + 1) * hypotenuse)
+      : 0
 
-      React.useEffect(() => {
-        updatePositions()
+    const y2 = React.useMemo(
+      () => getPositionOf(node.parentRef?.current).verticalCenter + yDistanceFromParent,
+      [node.parentRef?.current, yDistanceFromParent]
+    )
 
-        const resize = () => {
-          updatePositions()
-        }
-        window.addEventListener('resize', resize)
+    const x2 = React.useMemo(
+      () => getPositionOf(node.parentRef?.current).horizontalCenter + xDistanceFromParent,
+      [node.parentRef?.current, xDistanceFromParent]
+    )
 
-        return () => window.removeEventListener('resize', resize)
-      }, [])
+    const onClick = () => {
+      // create a node from the passed-in node
+      addNode(node)
+    }
 
-      const onClick = () => {
-        const newNode = new NodeModel({ topic: 'cross-collar', parentId: node.id })
-        node.setChildren([...node.children, newNode])
-        childRefs.current = [...childRefs.current, newNode]
-        updatePositions()
-      }
-
-      return (
+    const x1 = getPositionOf(node.parentRef?.current).horizontalCenter
+    const y1 = getPositionOf(node.parentRef?.current).verticalCenter
+    return (
+      <div id='ref' onClick={onClick} className='flex m-auto justify-center z-20'>
         <div
-          className='flex justify-center'
-          style={...xCoord && yCoord
-            ? {
-                ...(yCoord > 0 ? { top: `${yCoord}px` } : { bottom: `${yCoord}px` }),
-                ...(xCoord > 0 ? { right: `${xCoord}px` } : { left: `${xCoord}px` }),
-                position: 'absolute',
-              }
-            : {}}
+          ref={ref}
+          className={nodeStyle}
+          style={{
+            top: isRoot ? node.defaultPosition.verticalCenter : y2,
+            left: isRoot ? node.defaultPosition.horizontalCenter : x2,
+            position: 'absolute',
+          }}
         >
-          <div className='z-20 w-[200px]' ref={ref}>
-            <div onClick={onClick} className={nodeStyle}>
-              {node.topic}
-            </div>
-          </div>
-          {node.children?.map((n: Node, i: number) => {
-            const xFromRoot = Math.floor(
-              Math.sin(((2 * Math.PI) / node.children.length) * (i + 1)) * hypotenuse
-            )
-            const yFromRoot = Math.floor(
-              Math.cos(((2 * Math.PI) / node.children.length) * (i + 1)) * hypotenuse
-            )
-            console.log(
-              JSON.stringify({
-                xFromRoot,
-                yFromRoot,
-                x1: rootPosition.centerH,
-                y1: rootPosition.centerV,
-                x2: positions[i]?.centerH,
-                y2: positions[i]?.centerV,
-                id: n.topic,
-              })
-            )
-            return (
-              <>
-                <SvgLine
-                  id={n.topic}
-                  x1={rootPosition.centerH}
-                  y1={rootPosition.centerV}
-                  x2={rootPosition.centerH + xFromRoot}
-                  y2={rootPosition.centerV + yFromRoot}
-                  key={i}
-                />
-                <Node
-                  yCoord={rootPosition.centerV + yFromRoot}
-                  xCoord={rootPosition.centerH + xFromRoot}
-                  ref={childRefs?.current[i]}
-                  key={`${i}-${node.topic}`}
-                  node={n}
-                />
-              </>
-            )
+          {node.topic}
+        </div>
+        {!isRoot ? <SvgLine id={node.topic} {...{ x1, y1, x2, y2 }} /> : null}
+        <div>
+          {node.children.map((n: NodeModel, i: number) => {
+            const newRef = React.useRef(null)
+            n.parentRef = ref
+            return <Node ref={newRef} childNumber={i} node={n} key={i} />
           })}
         </div>
-      )
-    }
-  )
+      </div>
+    )
+  })

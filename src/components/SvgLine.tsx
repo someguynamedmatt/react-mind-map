@@ -14,7 +14,7 @@ export const SvgLine: React.FC<ISvgPath> = ({ x1 = 0, y1 = 0, x2 = 0, y2 = 0, id
   const height = document.body.clientHeight
 
   return (
-    <svg width={width} height={height} className='absolute z-10' id={id}>
+    <svg width={width} height={height} className='h-screen absolute z-10' id={id}>
       <defs>
         <marker id='head' orient='auto' markerWidth='2' markerHeight='4' refX='0.1' refY='2'>
           <path d='M0,0 V4 L2,2 Z' fill='#555' />
