@@ -7,6 +7,7 @@ export type INode = {
   parentId?: string | null
   parentRef?: React.RefObject<HTMLElement> | null
   ref?: React.RefObject<HTMLElement> | null
+  render?: Function
   siblings?: number
   topic?: string | null
 }
@@ -19,6 +20,7 @@ export class Node {
   private _parentRef: React.RefObject<HTMLElement> | null = null
   private _ref: React.RefObject<HTMLElement> | null = null
   private _topic: string | null
+  private _render: Function = () => ({})
   private _siblings: number = 0
 
   constructor({
@@ -58,6 +60,7 @@ export class Node {
       node.parentRef = this._parentRef
     })
     this._children = [...this._children, ...nodes]
+    if (this._isRoot) console.log("root's children", this._children.length)
     this.updateChildren()
     // this._siblings = nodes.length - 1
   }
@@ -117,6 +120,15 @@ export class Node {
 
   public get siblings(): number {
     return this._siblings
+  }
+
+  public renderMe(): void {
+    console.log('** render **', this._render)
+    this._render()
+  }
+
+  public set render(fn: Function) {
+    this._render = fn
   }
 
   private set siblings(siblings: number) {

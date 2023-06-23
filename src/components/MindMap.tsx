@@ -1,4 +1,5 @@
 import React from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import { Map, Node as NodeModel } from '../models'
 import { Node } from './Node'
 import { SvgPath } from './SvgPath'
@@ -26,7 +27,8 @@ const n1 = new NodeModel({ topic: 'triangle' })
 
 const n2 = new NodeModel({ topic: 'kimura' })
 
-map.root?.setChildren([n1, n2])
+map.root?.setChildren([n1])
+map.root?.setChildren([n2])
 
 export const MindMapContext = React.createContext()
 
@@ -79,12 +81,18 @@ export const MindMapProvider: React.FC = ({ children }) => {
   }
 
   const addNode = (node: NodeModel) => {
-    const newNode = new NodeModel({ topic: 'new-move', parentId: node.id })
-    console.log('parentNode', node)
-    console.log('newNode', newNode)
-    console.log('nodes', nodes)
+    const newNode = new NodeModel({ topic: uuidv4().split('-')[0], parentId: node.id })
+    /* console.log('parentNode', node)
+     * console.log('newNode', newNode)
+     * console.log('nodes', nodes) */
     node.setChildren([newNode])
     setNodes([...nodes, newNode])
+    updateChildPositions(node)
+  }
+
+  const updateChildPositions = (parentNode: NodeModel) => {
+    console.log('UPDATE CHILD POSITIONS')
+    /* parentNode.children.forEach(child => child.renderMe()) */
   }
 
   const setRoot = (rootNode: NodeModel) => {
@@ -100,7 +108,7 @@ export const MindMapProvider: React.FC = ({ children }) => {
       console.log('set nodes...')
       setNodes([...root?.current?.children])
     }
-  }, [root?.current])
+  }, [root?.current, root?.current?.children?.length])
 
   return (
     <MindMapContext.Provider

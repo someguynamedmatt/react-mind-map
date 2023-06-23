@@ -1,4 +1,5 @@
 import React, { createRef } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import { INode, Node as NodeModel } from '../models/node'
 import { useMindMap } from '../hooks'
 import { SvgLine } from './SvgLine'
@@ -12,24 +13,29 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
     const hypotenuse = 150
     const { addNode, getPositionOf } = React.useContext(MindMapContext)
     const newRefs = React.useRef([])
-
-    const xDistanceFromParent = node.siblings
-      ? Math.floor(Math.sin(((2 * Math.PI) / node.siblings + 1) * childNumber + 1) * hypotenuse)
-      : hypotenuse
-
-    const yDistanceFromParent = node.siblings
-      ? Math.floor(Math.cos(((2 * Math.PI) / node.siblings + 1) * childNumber + 1) * hypotenuse)
-      : 0
-
-    const y2 = React.useMemo(
-      () => getPositionOf(node.parentRef?.current).verticalCenter + yDistanceFromParent,
-      [node.parentRef?.current, yDistanceFromParent]
+    const [xDistanceFromParent, setXDistanceFromParent] = React.useState(
+      node.siblings
+        ? Math.floor(
+            Math.sin((2 * Math.PI * (node.siblings + 1) + Math.PI) / (node.siblings + 1)) *
+              hypotenuse
+          )
+        : hypotenuse
+    )
+    const [yDistanceFromParent, setYDistanceFromParent] = React.useState(
+      node.siblings
+        ? Math.floor(
+            Math.cos((2 * Math.PI * (node.siblings + 1) + Math.PI) / (node.siblings + 1)) *
+              hypotenuse
+          )
+        : hypotenuse
     )
 
-    const x2 = React.useMemo(
-      () => getPositionOf(node.parentRef?.current).horizontalCenter + xDistanceFromParent,
-      [node.parentRef?.current, xDistanceFromParent]
-    )
+    const [x1, setX1] = React.useState(getPositionOf(node.parentRef?.current).horizontalCenter)
+    const [y1, setY1] = React.useState(getPositionOf(node.parentRef?.current).verticalCenter)
+
+    const [x2, setX2] = React.useState(getPositionOf(node.parentRef?.current).horizontalCenter)
+    const [y2, setY2] = React.useState(getPositionOf(node.parentRef?.current).verticalCenter)
+    const [renderMe, setRenderMe] = React.useState(null)
 
     const onClick = () => {
       // create a node from the passed-in node
@@ -37,18 +43,21 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
       addNode(node)
     }
 
-    const [x1, setX1] = React.useState(getPositionOf(node.parentRef?.current).horizontalCenter)
-    const [y1, setY1] = React.useState(getPositionOf(node.parentRef?.current).verticalCenter)
-
-    const [x2, setX2] = React.useState(getPositionOf(node.parentRef?.current).horizontalCenter)
-    const [y2, setY2] = React.useState(getPositionOf(node.parentRef?.current).verticalCenter)
+    console.log('oh shit a render', node.topic, node.siblings)
+    React.useEffect(() => {
+      node.render = () => {
+        /* setRenderMe(uuidv4()) */
+      }
+    }, [node])
 
     React.useEffect(() => {
       setX1(getPositionOf(node.parentRef?.current).horizontalCenter)
       setY1(getPositionOf(node.parentRef?.current).verticalCenter)
     }, [
-      getPositionOf(node.parentRef?.current).verticalCenter,
       getPositionOf(node.parentRef?.current).horizontalCenter,
+      getPositionOf(node.parentRef?.current).verticalCenter,
+      node.parentRef?.current?.children,
+      node.siblings,
     ])
 
     React.useEffect(() => {
@@ -56,8 +65,8 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
       setY2(getPositionOf(node.parentRef?.current).verticalCenter + yDistanceFromParent)
     }, [
       getPositionOf(node.parentRef?.current).horizontalCenter,
-      xDistanceFromParent,
       getPositionOf(node.parentRef?.current).verticalCenter,
+      xDistanceFromParent,
       yDistanceFromParent,
     ])
 
@@ -70,15 +79,15 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
       console.log('**** END KIMURA \n\n')
     }
 
-    if (node.topic === 'new-move') {
-      console.log('\n\n****NEW-MOVE')
-      console.log('new-move node', node)
-      console.log('parent position', getPositionOf(node.parentRef?.current))
+    if (node.topic === 'triangle') {
+      console.log('\n\n****TRIANGLE')
+      console.log('triangle node', node)
       console.log('parent x1, y1', x1, y1)
       console.log('xDistanceFromParent', xDistanceFromParent)
       console.log('yDistanceFromParent', yDistanceFromParent)
-      console.log('**** END NEW-MOVE \n\n')
+      console.log('**** END TRIANGLE \n\n')
     }
+
     return (
       <div id='ref' className='flex m-auto justify-center'>
         <div
