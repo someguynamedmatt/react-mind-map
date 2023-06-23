@@ -37,6 +37,7 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
 
     const x1 = getPositionOf(node.parentRef?.current).horizontalCenter
     const y1 = getPositionOf(node.parentRef?.current).verticalCenter
+    const newRefs = React.useRef([])
     return (
       <div id='ref' onClick={onClick} className='flex m-auto justify-center z-20'>
         <div
@@ -53,9 +54,9 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
         {!isRoot ? <SvgLine id={node.topic} {...{ x1, y1, x2, y2 }} /> : null}
         <div>
           {node.children.map((n: NodeModel, i: number) => {
-            const newRef = React.useRef(null)
+            newRefs.current[i] = React.createRef()
             n.parentRef = ref
-            return <Node ref={newRef} childNumber={i} node={n} key={i} />
+            return <Node ref={newRefs.current[i]} childNumber={i} node={n} key={i} />
           })}
         </div>
       </div>

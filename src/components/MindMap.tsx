@@ -25,11 +25,8 @@ map.root?.topic = 'closed guard'
 const n1 = new NodeModel({ topic: 'triangle' })
 
 const n2 = new NodeModel({ topic: 'kimura' })
-const n2c = new NodeModel({ topic: 'turtle 3' })
-n2.setChildren([new NodeModel({ topic: 'turtle 2' })])
-n1.setChildren([new NodeModel({ topic: 'turtle' })])
 
-map.root?.setChildren([n1, n2, n2c])
+map.root?.setChildren([n1, n2])
 
 export const MindMapContext = React.createContext()
 
