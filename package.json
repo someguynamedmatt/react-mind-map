@@ -11,7 +11,7 @@
   "license": "MIT",
   "scripts": {
     "rollup": "rollup -c",
-    "test": "jest"
+    "test": "jest ./src"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",
