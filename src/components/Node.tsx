@@ -10,7 +10,7 @@ const nodeStyle =
 
 export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolean }> =
   React.forwardRef(({ childNumber = 1, node, isRoot }, ref: React.RefObject<HTMLElement>) => {
-    const hypotenuse = 150
+    const hypotenuse = childNumber > 11 ? Math.ceil(childNumber / 11) * 150 : 150
     const { addNode, getPositionOf } = React.useContext(MindMapContext)
     const newRefs = React.useRef([])
 
