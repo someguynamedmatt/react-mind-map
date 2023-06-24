@@ -82,16 +82,12 @@ export const MindMapProvider: React.FC = ({ children }) => {
 
   const addNode = (node: NodeModel) => {
     const newNode = new NodeModel({ topic: uuidv4().split('-')[0], parentId: node.id })
-    /* console.log('parentNode', node)
-     * console.log('newNode', newNode)
-     * console.log('nodes', nodes) */
     node.setChildren([newNode])
     setNodes([...nodes, newNode])
     updateChildPositions(node)
   }
 
   const updateChildPositions = (parentNode: NodeModel) => {
-    console.log('UPDATE CHILD POSITIONS')
     /* parentNode.children.forEach(child => child.renderMe()) */
   }
 
@@ -105,7 +101,6 @@ export const MindMapProvider: React.FC = ({ children }) => {
 
   React.useEffect(() => {
     if (root?.current) {
-      console.log('set nodes...')
       setNodes([...root?.current?.children])
     }
   }, [root?.current, root?.current?.children?.length])

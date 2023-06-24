@@ -60,7 +60,6 @@ export class Node {
       node.parentRef = this._parentRef
     })
     this._children = [...this._children, ...nodes]
-    if (this._isRoot) console.log("root's children", this._children.length)
     this.updateChildren()
     // this._siblings = nodes.length - 1
   }
@@ -123,7 +122,6 @@ export class Node {
   }
 
   public renderMe(): void {
-    console.log('** render **', this._render)
     this._render()
   }
 

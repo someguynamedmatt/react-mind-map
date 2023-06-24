@@ -13,21 +13,13 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
     const hypotenuse = 150
     const { addNode, getPositionOf } = React.useContext(MindMapContext)
     const newRefs = React.useRef([])
+
     const [xDistanceFromParent, setXDistanceFromParent] = React.useState(
-      node.siblings
-        ? Math.floor(
-            Math.sin((2 * Math.PI * (node.siblings + 1) + Math.PI) / (node.siblings + 1)) *
-              hypotenuse
-          )
-        : hypotenuse
+      Math.floor(hypotenuse * Math.cos(childNumber * (Math.PI / 6)))
     )
+
     const [yDistanceFromParent, setYDistanceFromParent] = React.useState(
-      node.siblings
-        ? Math.floor(
-            Math.cos((2 * Math.PI * (node.siblings + 1) + Math.PI) / (node.siblings + 1)) *
-              hypotenuse
-          )
-        : hypotenuse
+      Math.floor(hypotenuse * Math.sin(childNumber * (Math.PI / 6)))
     )
 
     const [x1, setX1] = React.useState(getPositionOf(node.parentRef?.current).horizontalCenter)
@@ -39,16 +31,12 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
 
     const onClick = () => {
       // create a node from the passed-in node
-      console.log('ADDING to', node.topic)
       addNode(node)
     }
 
-    console.log('oh shit a render', node.topic, node.siblings)
     React.useEffect(() => {
-      node.render = () => {
-        /* setRenderMe(uuidv4()) */
-      }
-    }, [node])
+      node.ref = ref
+    }, [ref.current])
 
     React.useEffect(() => {
       setX1(getPositionOf(node.parentRef?.current).horizontalCenter)
@@ -70,24 +58,6 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
       yDistanceFromParent,
     ])
 
-    if (node.topic === 'kimura') {
-      console.log('\n\n****KIMURA')
-      console.log('kimura node', node)
-      console.log('parent x1, y1', x1, y1)
-      console.log('xDistanceFromParent', xDistanceFromParent)
-      console.log('yDistanceFromParent', yDistanceFromParent)
-      console.log('**** END KIMURA \n\n')
-    }
-
-    if (node.topic === 'triangle') {
-      console.log('\n\n****TRIANGLE')
-      console.log('triangle node', node)
-      console.log('parent x1, y1', x1, y1)
-      console.log('xDistanceFromParent', xDistanceFromParent)
-      console.log('yDistanceFromParent', yDistanceFromParent)
-      console.log('**** END TRIANGLE \n\n')
-    }
-
     return (
       <div id='ref' className='flex m-auto justify-center'>
         <div
@@ -104,13 +74,16 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
         </div>
         {!isRoot ? <SvgLine id={node.topic} {...{ x1, y1, x2, y2 }} /> : null}
         <div>
-          {node.children.map((n: NodeModel, i: number) => {
-            // TODO: put this in a helper function
-            newRefs.current[i] = React.createRef()
-            n.ref = newRefs.current[i]
-            n.parentRef = node.ref
-            return <Node ref={newRefs.current[i]} childNumber={i} node={n} key={i} />
-          })}
+          {node.ref
+            ? node.children.map((n: NodeModel, i: number) => {
+                // TODO: put this in a helper function
+                newRefs.current[i] = React.createRef()
+                n.ref = newRefs.current[i]
+                n.parentRef = node.ref
+                if (node.topic === 'kimura') node.ref?.current?.style.top = '100px'
+                return <Node ref={newRefs.current[i]} childNumber={i} node={n} key={i} />
+              })
+            : null}
         </div>
       </div>
     )
