@@ -33,7 +33,7 @@ export const SvgLine: React.FC<ISvgPath> = ({
   }, [])
 
   return (
-    <svg width={width} height={height} className='h-screen w-screen absolute z-10' id={id}>
+    <svg width={width} height={height} className='absolute z-10' id={id}>
       <defs>
         <marker id='head' orient='auto' markerWidth='2' markerHeight='4' refX='0.1' refY='2'>
           <path d='M0,0 V4 L2,2 Z' fill={fill} />

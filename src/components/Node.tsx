@@ -56,37 +56,51 @@ export const Node: React.FC<{ fill: string; node: INode; childNumber?: number; i
         yDistanceFromParent,
       ])
 
+      const [height, setHeight] = React.useState('')
+      const [borderRadius, setBorderRadius] = React.useState()
       return (
-        <div id='ref' className='flex m-auto justify-center'>
+        <>
           <div
-            onMouseEnter={onMouseEnter}
-            onMouseOut={onMouseOut}
-            onClick={onClick}
+            onMouseEnter={() => {
+              onMouseEnter()
+              setHeight('h-[75px]')
+              setBorderRadius('15px')
+            }}
+            onMouseOut={() => {
+              setTimeout(() => {
+                onMouseOut()
+                setHeight('')
+                setBorderRadius('')
+              }, 1500)
+            }}
             ref={ref}
-            className={nodeStyle + ` ${z}`}
+            className={nodeStyle + ` ${z} ${height}`}
             style={{
               top: isRoot ? node.defaultPosition.verticalCenter : y2,
               left: isRoot ? node.defaultPosition.horizontalCenter : x2,
               position: 'absolute',
+              borderRadius: borderRadius,
+              border: borderRadius ? '1px solid black' : '',
             }}
           >
             {node.topic}
+            {borderRadius ? (
+              <div style={{ position: 'relative' }} onClick={onClick}>
+                add
+              </div>
+            ) : null}
           </div>
           {!isRoot ? <SvgLine id={node.topic} {...{ fill, x1, y1, x2, y2 }} /> : null}
-          <div>
-            {node.ref
-              ? node.children.map((n: NodeModel, i: number) => {
-                  // TODO: put this in a helper function
-                  newRefs.current[i] = React.createRef()
-                  n.ref = newRefs.current[i]
-                  n.parentRef = node.ref
-                  return (
-                    <Node fill={fill} ref={newRefs.current[i]} childNumber={i} node={n} key={i} />
-                  )
-                })
-              : null}
-          </div>
-        </div>
+          {node.ref
+            ? node.children.map((n: NodeModel, i: number) => {
+                // TODO: put this in a helper function
+                newRefs.current[i] = React.createRef()
+                n.ref = newRefs.current[i]
+                n.parentRef = node.ref
+                return <Node ref={newRefs.current[i]} childNumber={i} node={n} key={i} />
+              })
+            : null}
+        </>
       )
     }
   )

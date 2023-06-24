@@ -33,14 +33,12 @@ map.root?.setChildren([n2])
 export const MindMapContext = React.createContext()
 
 const Nodes: React.FC = () => {
-  const { nodes, setRoot, setRootRef } = React.useContext(MindMapContext)
+  const { nodes, setRoot } = React.useContext(MindMapContext)
   const rootRef = React.useRef()
 
   React.useEffect(() => {
     setRoot(map.root)
   }, [])
-
-  React.useMemo(() => setRootRef(rootRef), [rootRef?.current])
 
   return (
     <Node
@@ -64,7 +62,6 @@ export const MindMap: React.FC<IMindMap> = ({ data }) => {
 
 export const MindMapProvider: React.FC = ({ children }) => {
   const [nodes, setNodes] = React.useState<Node[]>([])
-  const [rootRef, _setRootRef] = React.useState<React.RefObject<HTMLElement>>(null)
   const [fill, setFill] = React.useState()
   const root = React.useRef(null)
 
@@ -91,10 +88,6 @@ export const MindMapProvider: React.FC = ({ children }) => {
     root.current = rootNode
   }
 
-  const setRootRef = (ref: React.RefObject<HTMLElement>): void => {
-    _setRootRef(ref)
-  }
-
   // TODO: make this part of the API
   const onMouseEnter = () => {
     setFill('#45E00B')
@@ -106,10 +99,8 @@ export const MindMapProvider: React.FC = ({ children }) => {
   }
 
   React.useEffect(() => {
-    if (root?.current) {
-      setNodes([...root?.current?.children])
-    }
-  }, [root?.current, root?.current?.children?.length])
+    setNodes([...root?.current?.children])
+  }, [])
 
   return (
     <MindMapContext.Provider
@@ -121,9 +112,7 @@ export const MindMapProvider: React.FC = ({ children }) => {
         onMouseEnter,
         onMouseOut,
         root: root?.current,
-        rootRef,
         setRoot,
-        setRootRef,
       }}
     >
       {children}
