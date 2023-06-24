@@ -112,7 +112,7 @@ export class Node {
   }
 
   public get defaultPosition(): Record<string, string> {
-    return { horizontalCenter: '500px', verticalCenter: '500px' }
+    return { horizontalCenter: '250px', verticalCenter: '250px' }
   }
 
   public get siblings(): number {
