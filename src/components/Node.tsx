@@ -89,7 +89,7 @@ export const Node: React.FC<{
       }, 1500)
     }
 
-    const DefaultComponent = ({ onMouseEnter, onMouseOut, topic }) => (
+    const DefaultComponent = () => (
       <div
         onMouseEnter={onMouseEnterDefault}
         onMouseOut={onMouseOutDefault}
@@ -97,7 +97,7 @@ export const Node: React.FC<{
         className={nodeStyle + ` ${z} ${height}`}
         style={injectedStyle}
       >
-        {topic}
+        {node.topic}
         {borderRadius ? (
           <div style={{ position: 'relative' }} onClick={onClick}>
             add

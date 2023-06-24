@@ -53,41 +53,10 @@ const Nodes: React.FC<{ customComponent: React.ReactNode }> = ({ customComponent
 }
 
 export const MindMap: React.FC<IMindMap> = ({ data }) => {
-  const nodeStyle =
-    'inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 relative cursor-pointer'
-  const customComponent = React.forwardRef(
-    (
-      { onMouseEnter, onMouseOut, topic, node, isRoot, y2, x2, onClick, borderRadius },
-      ref: React.RefObject
-    ) => (
-      <div
-        onMouseEnter={onMouseEnter}
-        onMouseOut={onMouseOut}
-        ref={ref}
-        className={nodeStyle}
-        style={{
-          backgroundColor: 'red',
-          top: isRoot ? node.defaultPosition.verticalCenter : y2,
-          left: isRoot ? node.defaultPosition.horizontalCenter : x2,
-          position: 'absolute',
-          borderRadius: borderRadius,
-          border: borderRadius ? '1px solid black' : '',
-        }}
-      >
-        {node.topic}
-        {borderRadius ? (
-          <div style={{ position: 'relative' }} onClick={onClick}>
-            add
-          </div>
-        ) : null}
-      </div>
-    )
-  )
-
   return (
     <MindMapProvider>
       <h1>MindMap</h1>
-      <Nodes customComponent={customComponent} />
+      <Nodes />
     </MindMapProvider>
   )
 }
