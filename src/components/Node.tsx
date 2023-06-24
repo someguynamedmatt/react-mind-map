@@ -6,7 +6,7 @@ import { SvgLine } from './SvgLine'
 import { MindMapContext, MindMapProvider } from './MindMap'
 
 const nodeStyle =
-  'inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 relative z-20'
+  'inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 relative z-20 cursor-pointer'
 
 export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolean }> =
   React.forwardRef(({ childNumber = 1, node, isRoot }, ref: React.RefObject<HTMLElement>) => {
@@ -28,6 +28,7 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
     const [x2, setX2] = React.useState(getPositionOf(node.parentRef?.current).horizontalCenter)
     const [y2, setY2] = React.useState(getPositionOf(node.parentRef?.current).verticalCenter)
     const [renderMe, setRenderMe] = React.useState(null)
+    const [fill, setFill] = React.useState()
 
     const onClick = () => {
       // create a node from the passed-in node
@@ -61,6 +62,8 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
     return (
       <div id='ref' className='flex m-auto justify-center'>
         <div
+          onMouseEnter={() => setFill('#45E00B')}
+          onMouseOut={() => setFill('#555')}
           onClick={onClick}
           ref={ref}
           className={nodeStyle}
@@ -72,7 +75,7 @@ export const Node: React.FC<{ node: INode; childNumber?: number; isRoot?: boolea
         >
           {node.topic}
         </div>
-        {!isRoot ? <SvgLine id={node.topic} {...{ x1, y1, x2, y2 }} /> : null}
+        {!isRoot ? <SvgLine id={node.topic} {...{ fill, x1, y1, x2, y2 }} /> : null}
         <div>
           {node.ref
             ? node.children.map((n: NodeModel, i: number) => {
