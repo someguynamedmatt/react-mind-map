@@ -84,11 +84,6 @@ export const MindMapProvider: React.FC = ({ children }) => {
     const newNode = new NodeModel({ topic: uuidv4().split('-')[0], parentId: node.id })
     node.setChildren([newNode])
     setNodes([...nodes, newNode])
-    updateChildPositions(node)
-  }
-
-  const updateChildPositions = (parentNode: NodeModel) => {
-    /* parentNode.children.forEach(child => child.renderMe()) */
   }
 
   const setRoot = (rootNode: NodeModel) => {
