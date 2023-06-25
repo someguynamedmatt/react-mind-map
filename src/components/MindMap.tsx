@@ -32,7 +32,7 @@ map.root?.setChildren([n2])
 
 export const MindMapContext = React.createContext()
 
-const Nodes: React.FC = () => {
+const Nodes: React.FC<{ customComponent: React.ReactNode }> = ({ customComponent }) => {
   const { nodes, setRoot } = React.useContext(MindMapContext)
   const rootRef = React.useRef()
 
@@ -42,6 +42,7 @@ const Nodes: React.FC = () => {
 
   return (
     <Node
+      customComponent={customComponent}
       id='top-level'
       ref={rootRef}
       isRoot={true}
