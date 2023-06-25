@@ -7,7 +7,7 @@ interface ISvgPath {
   x2: number
   y2: number
   id?: string
-  fill: string
+  fill: string | undefined
 }
 
 export const SvgLine: React.FC<ISvgPath> = ({

@@ -15,7 +15,7 @@ export function useMindMap() {
   const [nodes, setNodes] = React.useState<Node[]>([])
 
   console.log('USE MIND MAP')
-  const getPositionOf = (ref?: HTMLElement): NodePosition => {
+  const getPositionOf = (ref?: HTMLDivElement): NodePosition => {
     if (!ref) return undefinedPosition
 
     const { top, left, width, height } = ref.getBoundingClientRect()

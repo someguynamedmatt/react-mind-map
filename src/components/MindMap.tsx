@@ -1,8 +1,7 @@
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Map, Node as NodeModel } from '../models'
-import { Node } from './Node'
-import { SvgPath } from './SvgPath'
+import { Node, defaultFill } from './Node'
 import { useMindMap } from '../hooks'
 
 export interface IMindMap {
@@ -21,33 +20,39 @@ const undefinedPosition: NodePosition = {
 
 // TODO remove this hard-coded map/data
 const map = new Map()
+// @ts-ignore code for testing, removed when done
 map.root?.topic = 'closed guard'
 
 const n1 = new NodeModel({ topic: 'triangle' })
 
 const n2 = new NodeModel({ topic: 'kimura' })
 
+// @ts-ignore code for testing, removed when done
 map.root?.setChildren([n1])
+// @ts-ignore code for testing, removed when done
 map.root?.setChildren([n2])
 
-export const MindMapContext = React.createContext()
+export const MindMapContext = React.createContext<IMindMapProvider>({} as IMindMapProvider)
 
 const Nodes: React.FC = () => {
   const { nodes, setRoot } = React.useContext(MindMapContext)
-  const rootRef = React.useRef()
+  const rootRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
     setRoot(map.root)
   }, [])
 
   return (
-    <Node
-      id='top-level'
-      ref={rootRef}
-      isRoot={true}
-      node={map.root}
-      style={{ position: 'absolute', top: '50%' }}
-    />
+    <>
+      {!map.root ? null : (
+        <Node
+          isRoot={true}
+          node={map.root}
+          ref={rootRef}
+          style={{ position: 'absolute', top: '50%' }}
+        />
+      )}
+    </>
   )
 }
 
@@ -60,12 +65,26 @@ export const MindMap: React.FC<IMindMap> = ({ data }) => {
   )
 }
 
-export const MindMapProvider: React.FC = ({ children }) => {
-  const [nodes, setNodes] = React.useState<Node[]>([])
-  const [fill, setFill] = React.useState()
-  const root = React.useRef(null)
+export type Hash = '#'
+export type HexColor = `${Hash}${string}`
 
-  const getPositionOf = (ref?: HTMLElement): NodePosition => {
+export interface IMindMapProvider {
+  addNode: (parentNode: NodeModel) => void
+  fill: HexColor | undefined
+  getPositionOf: (ref?: HTMLDivElement | null) => NodePosition
+  nodes: NodeModel[]
+  onMouseEnter: () => void
+  onMouseOut: () => void
+  root?: NodeModel
+  setRoot: (root: NodeModel) => void
+}
+
+export const MindMapProvider = ({ children }: { children: React.ReactNode[] }): React.ReactNode => {
+  const [nodes, setNodes] = React.useState<NodeModel[]>([])
+  const [fill, setFill] = React.useState<HexColor | undefined>(defaultFill)
+  const root = React.useRef<NodeModel | null>(null)
+
+  const getPositionOf = (ref?: HTMLDivElement | null): NodePosition => {
     if (!ref) return undefinedPosition
 
     const { top, left, width, height } = ref.getBoundingClientRect()
@@ -95,11 +114,11 @@ export const MindMapProvider: React.FC = ({ children }) => {
 
   // TODO: make this part of the API
   const onMouseOut = () => {
-    setFill()
+    setFill(undefined)
   }
 
   React.useEffect(() => {
-    setNodes([...root?.current?.children])
+    setNodes([...(root?.current?.children ?? [])])
   }, [])
 
   return (
@@ -111,7 +130,7 @@ export const MindMapProvider: React.FC = ({ children }) => {
         nodes,
         onMouseEnter,
         onMouseOut,
-        root: root?.current,
+        root: root?.current ?? undefined,
         setRoot,
       }}
     >

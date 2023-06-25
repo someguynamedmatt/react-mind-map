@@ -5,8 +5,8 @@ export type INode = {
   id?: string
   isRoot?: boolean
   parentId?: string | null
-  parentRef?: React.RefObject<HTMLElement> | null
-  ref?: React.RefObject<HTMLElement> | null
+  parentRef?: React.ForwardedRef<HTMLDivElement> | null
+  ref?: React.ForwardedRef<HTMLDivElement> | null
   siblings?: number
   topic?: string | null
 }
@@ -16,8 +16,8 @@ export class Node {
   private _id: string
   private _isRoot: boolean
   private _parentId: string | null = null
-  private _parentRef: React.RefObject<HTMLElement> | null = null
-  private _ref: React.RefObject<HTMLElement> | null = null
+  private _parentRef: React.ForwardedRef<HTMLDivElement> | null = null
+  private _ref: React.ForwardedRef<HTMLDivElement> | null = null
   private _topic: string | null
   private _siblings: number = 0
 
@@ -95,19 +95,19 @@ export class Node {
     this._parentId = parentId
   }
 
-  public get parentRef(): React.RefObject<HTMLElement> | null {
+  public get parentRef(): React.ForwardedRef<HTMLDivElement> | null {
     return this._parentRef
   }
 
-  public set parentRef(ref: React.RefObject<HTMLElement> | null) {
+  public set parentRef(ref: React.ForwardedRef<HTMLDivElement> | null) {
     this._parentRef = ref
   }
 
-  public get ref(): React.RefObject<HTMLElement> | null {
+  public get ref(): React.ForwardedRef<HTMLDivElement> | null {
     return this._ref
   }
 
-  public set ref(ref: React.RefObject<HTMLElement> | null) {
+  public set ref(ref: React.ForwardedRef<HTMLDivElement> | null) {
     this._ref = ref
   }
 
