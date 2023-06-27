@@ -53,21 +53,14 @@ export const Node = React.forwardRef<HTMLDivElement, INodeProps>(
       node.ref = ref
     }, [ref])
 
-    React.useEffect(() => {
+    const resize = () => {
       setX1(
         getPositionOf((node.parentRef as React.RefObject<HTMLDivElement>)?.current).horizontalCenter
       )
       setY1(
         getPositionOf((node.parentRef as React.RefObject<HTMLDivElement>)?.current).verticalCenter
       )
-    }, [
-      getPositionOf((node.parentRef as React.RefObject<HTMLDivElement>)?.current).horizontalCenter,
-      getPositionOf((node.parentRef as React.RefObject<HTMLDivElement>)?.current).verticalCenter,
-      (node.parentRef as React.RefObject<HTMLDivElement>)?.current?.children,
-      node.siblings,
-    ])
 
-    React.useEffect(() => {
       setX2(
         getPositionOf((node.parentRef as React.RefObject<HTMLDivElement>)?.current)
           .horizontalCenter + xDistanceFromParent
@@ -76,12 +69,15 @@ export const Node = React.forwardRef<HTMLDivElement, INodeProps>(
         getPositionOf((node.parentRef as React.RefObject<HTMLDivElement>)?.current).verticalCenter +
           yDistanceFromParent
       )
-    }, [
-      getPositionOf((node.parentRef as React.RefObject<HTMLDivElement>)?.current).horizontalCenter,
-      getPositionOf((node.parentRef as React.RefObject<HTMLDivElement>)?.current).verticalCenter,
-      xDistanceFromParent,
-      yDistanceFromParent,
-    ])
+    }
+
+    React.useEffect(() => {
+      resize()
+      window.addEventListener('resize', resize)
+      return () => {
+        window.removeEventListener('resize', resize)
+      }
+    }, [])
 
     const [height, setHeight] = React.useState<string>('')
     const [borderRadius, setBorderRadius] = React.useState<string | undefined>()
@@ -103,8 +99,8 @@ export const Node = React.forwardRef<HTMLDivElement, INodeProps>(
           ref={ref}
           className={nodeStyle + ` ${z} ${height}`}
           style={{
-            top: isRoot ? node.defaultPosition.verticalCenter : y2,
-            left: isRoot ? node.defaultPosition.horizontalCenter : x2,
+            top: isRoot ? '50%' : y2,
+            left: isRoot ? '50%' : x2,
             position: 'absolute',
             borderRadius: borderRadius,
             border: borderRadius ? '1px solid black' : '',
