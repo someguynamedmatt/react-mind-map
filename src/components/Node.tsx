@@ -42,6 +42,14 @@ export const Node = React.forwardRef<HTMLDivElement, INodeProps>(
     const [y2, setY2] = React.useState(
       getPositionOf((node.parentRef as React.RefObject<HTMLDivElement>)?.current).verticalCenter
     )
+
+    const [parentHeight, setParentHeight] = React.useState(
+      getPositionOf((node.parentRef as React.RefObject<HTMLDivElement>)?.current).height
+    )
+
+    const [parentWidth, setParentWidth] = React.useState(
+      getPositionOf((node.parentRef as React.RefObject<HTMLDivElement>)?.current).width
+    )
     const [z, setZ] = React.useState('z-20')
 
     const onClick = () => {
@@ -99,8 +107,8 @@ export const Node = React.forwardRef<HTMLDivElement, INodeProps>(
           ref={ref}
           className={nodeStyle + ` ${z} ${height}`}
           style={{
-            top: isRoot ? '50%' : y2,
-            left: isRoot ? '50%' : x2,
+            top: isRoot ? '10%' : y2,
+            left: isRoot ? '10%' : x2,
             position: 'absolute',
             borderRadius: borderRadius,
             border: borderRadius ? '1px solid black' : '',
@@ -113,7 +121,9 @@ export const Node = React.forwardRef<HTMLDivElement, INodeProps>(
             </div>
           ) : null}
         </div>
-        {!isRoot ? <SvgLine {...{ fill, x1, y1, x2, y2 }} /> : null}
+        {!isRoot ? (
+          <SvgLine {...{ fill, x1, y1, x2, y2, width: parentWidth, height: parentHeight }} />
+        ) : null}
         {node.ref
           ? node.children.map((n: NodeModel, i: number) => {
               // TODO: put this in a helper function

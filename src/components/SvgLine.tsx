@@ -1,37 +1,31 @@
 import React from 'react'
+import { MindMapContext } from '../components/MindMap'
 
 // see: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#curve_commands
 interface ISvgPath {
-  x1: number
-  y1: number
-  x2: number
-  y2: number
-  id?: string
   fill: string | undefined
+  height: number
+  id?: string
+  width: number
+  x1: number
+  x2: number
+  y1: number
+  y2: number
 }
 
 export const SvgLine: React.FC<ISvgPath> = ({
   fill = '#555',
-  x1 = 0,
-  y1 = 0,
-  x2 = 0,
-  y2 = 0,
+  height = 0,
   id,
+  width = 0,
+  x1 = 0,
+  x2 = 0,
+  y1 = 0,
+  y2 = 0,
 }) => {
-  const [width, setWidth] = React.useState(window.innerWidth)
-  const [height, setHeight] = React.useState(window.innerHeight)
-
-  React.useEffect(() => {
-    const updateDimensions = () => {
-      setWidth(window.innerWidth)
-      setHeight(window.innerHeight)
-    }
-    window.addEventListener('resize', updateDimensions)
-    return () => {
-      window.removeEventListener('resize', updateDimensions)
-    }
-  }, [])
-
+  const {
+    encapsulatingDimensions: { width, height },
+  } = React.useContext(MindMapContext)
   return (
     <svg width={width} height={height} className='absolute z-10' id={id}>
       <defs>
