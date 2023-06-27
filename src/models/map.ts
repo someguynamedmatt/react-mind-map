@@ -7,7 +7,7 @@ type MapNodes = {
 
 export class Map {
   private _nodes: MapNodes = {}
-  private _root?: Node
+  private _root: Node
 
   constructor(root: Node = new Node({ id: uuidv4(), isRoot: true })) {
     this._nodes = { root }
@@ -35,15 +35,15 @@ export class Map {
   }
 
   public removeNode(node: Node): boolean {
-    delete this._nodes[node.id]
-    if (node.isRoot && node.id === this._root?.id) {
-      delete this._nodes.root
-      delete this._root
+    if (this._nodes[node.id].isRoot) {
+      console.warn('[WARN]: removeNode failed: attempted to remove the root node')
+      return false
     }
+    delete this._nodes[node.id]
     return true
   }
 
-  public get root(): Node | null {
-    return this._root ?? null
+  public get root(): Node {
+    return this._root
   }
 }

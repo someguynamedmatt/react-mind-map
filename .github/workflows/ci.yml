@@ -17,17 +17,18 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: install # will run `yarn install` command
+
       - name: Build production bundle
         uses: borales/actions-yarn@v4
         with:
-          cmd: rollup # will run `yarn build:prod` command
+          cmd: rollup # will run `yarn rollup` command
+
       - name: Test the app
         uses: borales/actions-yarn@v4
         with:
           cmd: test # will run `yarn test` command
 
-      - name: Run test in sub-folder
+      - name: Type check
         uses: borales/actions-yarn@v4
         with:
-          cmd: test
-          dir: 'src' # will run `yarn test` in `frontend` sub folder
+          cmd: tsc-check # will run `yarn tsc-check` command
