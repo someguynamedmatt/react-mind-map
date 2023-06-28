@@ -11,11 +11,15 @@ export interface IMindMap {
 export type NodePosition = {
   horizontalCenter: number
   verticalCenter: number
+  height: number
+  width: number
 }
 
 const undefinedPosition: NodePosition = {
   horizontalCenter: 500,
   verticalCenter: 500,
+  height: 200,
+  width: 200,
 }
 
 // TODO remove this hard-coded map/data
@@ -57,11 +61,38 @@ const Nodes: React.FC = () => {
 }
 
 export const MindMap: React.FC<IMindMap> = ({ data }) => {
+  const mindMap = React.useRef(null)
+  const [width, setWidth] = React.useState()
+  const [height, setHeight] = React.useState()
+
+  const setDimensions = () => {
+    console.log('set dimensions event')
+    setWidth(Math.floor(mindMap?.current.getBoundingClientRect().width))
+    setHeight(Math.floor(mindMap?.current.getBoundingClientRect().height))
+  }
+
+  React.useEffect(() => {
+    setDimensions()
+    mindMap?.current.addEventListener('resize', setDimensions)
+    mindMap?.current.addEventListener('scroll', setDimensions)
+
+    return () => {
+      mindMap?.current.removeEventListener('resize', setDimensions)
+      mindMap?.current.removeEventListener('scroll', setDimensions)
+    }
+  }, [])
+
   return (
-    <MindMapProvider>
-      <h1>MindMap</h1>
-      <Nodes />
-    </MindMapProvider>
+    <div
+      id='mind-map-main'
+      style={{ display: 'block', position: 'relative', height: '100%', overflow: 'auto' }}
+    >
+      <div id='inner' style={{ position: 'relative', height: '100%' }} ref={mindMap}>
+        <MindMapProvider encapsulatingDimensions={{ width, height }}>
+          <Nodes />
+        </MindMapProvider>
+      </div>
+    </div>
   )
 }
 
@@ -79,7 +110,13 @@ export interface IMindMapProvider {
   setRoot: (root: NodeModel) => void
 }
 
-export const MindMapProvider = ({ children }: { children: React.ReactNode[] }): React.ReactNode => {
+export const MindMapProvider = ({
+  children,
+  encapsulatingDimensions,
+}: {
+  children: React.ReactNode[]
+  encapsulatingDimensions: Record<{ width: number; height: number }>
+}): React.ReactNode => {
   const [nodes, setNodes] = React.useState<NodeModel[]>([])
   const [fill, setFill] = React.useState<HexColor | undefined>(defaultFill)
   const root = React.useRef<NodeModel | null>(null)
@@ -94,7 +131,7 @@ export const MindMapProvider = ({ children }: { children: React.ReactNode[] }): 
     const horizontalCenter = Math.floor(left + midPointX)
     const verticalCenter = Math.floor(top)
 
-    return { horizontalCenter, verticalCenter }
+    return { horizontalCenter, verticalCenter, height, width }
   }
 
   const addNode = (node: NodeModel) => {
@@ -132,6 +169,7 @@ export const MindMapProvider = ({ children }: { children: React.ReactNode[] }): 
         onMouseOut,
         root: root?.current ?? undefined,
         setRoot,
+        encapsulatingDimensions,
       }}
     >
       {children}
