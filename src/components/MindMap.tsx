@@ -87,7 +87,7 @@ export const MindMap: React.FC<IMindMap> = ({ data }) => {
       id='mind-map-main'
       style={{ display: 'block', position: 'relative', height: '100%', overflow: 'auto' }}
     >
-      <div id='inner' style={{ position: 'relative' }} ref={mindMap}>
+      <div id='inner' style={{ position: 'relative', height: '100%' }} ref={mindMap}>
         <MindMapProvider encapsulatingDimensions={{ width, height }}>
           <Nodes />
         </MindMapProvider>
