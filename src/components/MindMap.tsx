@@ -66,28 +66,29 @@ export const MindMap: React.FC<IMindMap> = ({ data }) => {
   const [height, setHeight] = React.useState()
 
   const setDimensions = () => {
-    setWidth(Math.floor(mindMap?.current.getBoundingClientRect().width - 25))
-    setHeight(Math.floor(mindMap?.current.getBoundingClientRect().height - 25))
+    console.log('set dimensions event')
+    setWidth(Math.floor(mindMap?.current.getBoundingClientRect().width))
+    setHeight(Math.floor(mindMap?.current.getBoundingClientRect().height))
   }
 
   React.useEffect(() => {
     setDimensions()
-    window.addEventListener('resize', setDimensions)
+    mindMap?.current.addEventListener('resize', setDimensions)
+    mindMap?.current.addEventListener('scroll', setDimensions)
 
     return () => {
-      window.removeEventListener('resize', setDimensions)
+      mindMap?.current.removeEventListener('resize', setDimensions)
+      mindMap?.current.removeEventListener('scroll', setDimensions)
     }
   }, [])
 
   return (
-    <div id='mind-map-main' style={{ display: 'block', position: 'relative', height: 'inherit' }}>
-      <div
-        id='inner'
-        style={{ height: 'inherit', position: 'relative', overflow: 'auto' }}
-        ref={mindMap}
-      >
+    <div
+      id='mind-map-main'
+      style={{ display: 'block', position: 'relative', height: '100%', overflow: 'auto' }}
+    >
+      <div id='inner' style={{ position: 'relative' }} ref={mindMap}>
         <MindMapProvider encapsulatingDimensions={{ width, height }}>
-          <h1>MindMap</h1>
           <Nodes />
         </MindMapProvider>
       </div>

@@ -82,8 +82,10 @@ export const Node = React.forwardRef<HTMLDivElement, INodeProps>(
     React.useEffect(() => {
       resize()
       window.addEventListener('resize', resize)
+      window.addEventListener('scroll', resize)
       return () => {
         window.removeEventListener('resize', resize)
+        window.removeEventListener('scroll', resize)
       }
     }, [])
 
